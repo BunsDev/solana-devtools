@@ -1,4 +1,3 @@
-import { assertIsAddress } from 'gill'
 import { useMemo } from 'react'
 import { useParams } from 'next/navigation'
 import { ExplorerLink } from '@/components/cluster/cluster-ui'
@@ -6,6 +5,7 @@ import { AppHero } from '@/components/app-hero'
 import { ellipsify } from '@/lib/utils'
 
 import { AccountBalance, AccountButtons, AccountTokens, AccountTransactions } from './account-ui'
+import type { Address } from 'gill'
 
 export default function AccountFeatureDetail() {
   const params = useParams()
@@ -13,8 +13,8 @@ export default function AccountFeatureDetail() {
     if (!params.address || typeof params.address !== 'string') {
       return
     }
-    assertIsAddress(params.address)
-    return params.address
+    // assertIsAddress(params.address)
+    return params.address as Address
   }, [params])
   if (!address) {
     return <div>Error loading account</div>

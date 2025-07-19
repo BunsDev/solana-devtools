@@ -1,7 +1,7 @@
 import { ellipsify } from '@wallet-ui/react'
 import { Button } from '@/components/ui/button'
 import { ExplorerLink } from '@/components/cluster/cluster-ui'
-import { useBasicProgramId, useGetProgramAccountQuery, useGreetMutation } from './basic-data-access'
+import { useBasicProgramId, useGetProgramAccountQuery, useGreetMutation, useLatestGreeting } from './basic-data-access'
 
 export function BasicProgramExplorerLink() {
   const programId = useBasicProgramId()
@@ -21,6 +21,9 @@ export function BasicCreate() {
 
 export function BasicProgram() {
   const query = useGetProgramAccountQuery()
+  const { greeting } = useLatestGreeting()
+
+  console.log({ greeting })
 
   if (query.isLoading) {
     return <span className="loading loading-spinner loading-lg"></span>
@@ -34,7 +37,19 @@ export function BasicProgram() {
   }
   return (
     <div className={'space-y-6'}>
-      <pre>{JSON.stringify(query.data.value.data, null, 2)}</pre>
+      {/* {greeting && ( */}
+        <div className="p-4 bg-black text-white border rounded-lg shadow-sm">
+          <h3 className="text-lg font-semibold mb-2">Latest Greeting</h3>
+          <div className="text-2xl font-bold">{greeting}</div>
+          <p className="text-sm mt-2">This greeting was sent from the Solana program</p>
+        </div>
+      {/* )} */}
+      <div className="p-4 bg-black text-white border rounded-lg shadow-sm">
+        <h3 className="text-lg font-semibold mb-2">Program Data</h3>
+        <pre className="p-4 bg-black text-white border rounded-lg overflow-auto">
+          {JSON.stringify(query.data.value.data, null, 2)}
+        </pre>
+      </div>
     </div>
   )
 }

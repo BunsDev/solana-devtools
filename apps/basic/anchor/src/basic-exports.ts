@@ -11,6 +11,7 @@ export { BasicIDL }
 export function getBasicProgramId(cluster: SolanaClusterId) {
   switch (cluster) {
     case 'solana:devnet':
+      return address('BbDVPD53NemX9wCk4Xie8A2jv8NrjNcUre9ruX9BW7TQ')
     case 'solana:testnet':
       // This is the program ID for the Basic program on devnet and testnet.
       return address('6z68wfurCMYkZG51s1Et9BJEd9nJGUusjHXNt4dGbNNF')

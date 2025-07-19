@@ -94,12 +94,24 @@ export function useTransferSolMutation({ address }: { address: Address }) {
   return useMutation({
     mutationFn: async (input: { destination: Address; amount: number }) => {
       try {
+        // Check if wallet is connected and signer is available
+        if (!signer) {
+          throw new Error('Wallet not connected')
+        }
+
         const { value: latestBlockhash } = await client.rpc.getLatestBlockhash({ commitment: 'confirmed' }).send()
+
+        // Make sure we have a valid blockhash
+        if (!latestBlockhash) {
+          throw new Error('Failed to get a valid blockhash')
+        }
 
         const transaction = createTransaction({
           feePayer: signer,
           version: 0,
           latestBlockhash,
+          // Add lifetimeConstraint required by the transaction API
+          lifetimeConstraint: { blockhash: latestBlockhash.blockhash, lastValidBlockHeight: latestBlockhash.lastValidBlockHeight },
           instructions: [
             getTransferSolInstruction({
               amount: input.amount,

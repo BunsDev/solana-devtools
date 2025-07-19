@@ -1,11 +1,18 @@
-import { type Address, Base58EncodedBytes, SolanaClient } from 'gill'
+import { type Address, Base58EncodedBytes } from 'gill'
+
+// Define RPC client interface to avoid dependency on SolanaClient
+interface RpcClient {
+  getProgramAccounts: (address: string | object, config: object) => { 
+    send: () => Promise<any> 
+  }
+}
 
 export interface GetProgramAccountsConfig {
   filter: string
   programAddress: Address
 }
 
-export async function getProgramAccounts(rpc: SolanaClient['rpc'], config: GetProgramAccountsConfig) {
+export async function getProgramAccounts(rpc: RpcClient, config: GetProgramAccountsConfig) {
   return await rpc
     .getProgramAccounts(config.programAddress, {
       encoding: 'jsonParsed',

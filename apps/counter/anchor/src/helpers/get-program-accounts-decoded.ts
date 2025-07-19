@@ -6,8 +6,14 @@ import {
   Decoder,
   MaybeEncodedAccount,
   parseBase64RpcAccount,
-  SolanaClient,
 } from 'gill'
+
+// Define RPC client interface to avoid dependency on SolanaClient
+interface RpcClient {
+  getProgramAccounts: (address: string | object, config: object) => { 
+    send: () => Promise<any> 
+  }
+}
 import { getProgramAccounts, GetProgramAccountsConfig } from './get-program-accounts'
 
 export interface GetProgramAccountsDecodedConfig<T extends object> extends GetProgramAccountsConfig {
@@ -18,7 +24,7 @@ export interface GetProgramAccountsDecodedConfig<T extends object> extends GetPr
 // See https://github.com/codama-idl/codama/issues/586
 // Thanks @mikemaccana for inspiration on this logic
 export async function getProgramAccountsDecoded<T extends object>(
-  rpc: SolanaClient['rpc'],
+  rpc: RpcClient,
   config: GetProgramAccountsDecodedConfig<T>,
 ): Promise<Account<T, string>[]> {
   const programAccounts = await getProgramAccounts(rpc, {
@@ -26,7 +32,7 @@ export async function getProgramAccountsDecoded<T extends object>(
     programAddress: config.programAddress,
   })
 
-  const encodedAccounts: Array<MaybeEncodedAccount> = programAccounts.map((item) => {
+  const encodedAccounts: Array<MaybeEncodedAccount> = programAccounts.map((item: any) => {
     const account = parseBase64RpcAccount(
       item.pubkey,
       item.account as AccountInfoBase & AccountInfoWithBase64EncodedData,

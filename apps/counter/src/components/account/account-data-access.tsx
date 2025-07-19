@@ -94,7 +94,9 @@ export function useTransferSolMutation({ address }: { address: Address }) {
   return useMutation({
     mutationFn: async (input: { destination: Address; amount: number }) => {
       try {
-        const { value: latestBlockhash } = await client.rpc.getLatestBlockhash({ commitment: 'confirmed' }).send()
+        const { value: latestBlockhash } = await client.rpc.getLatestBlockhash({
+          commitment: 'confirmed',
+        }).send()
 
         const transaction = createTransaction({
           feePayer: signer,

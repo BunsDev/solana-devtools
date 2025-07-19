@@ -14,6 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ExplorerLink } from '../cluster/cluster-ui'
 import { CounterAccount } from '@project/anchor'
 import { ReactNode } from 'react'
+import { NetworkHelper, DevnetQuickActions } from '../solana/network-helper'
 
 export function CounterProgramExplorerLink() {
   const programId = useCounterProgramId()
@@ -55,8 +56,13 @@ export function CounterProgramGuard({ children }: { children: ReactNode }) {
 
   if (!programAccountQuery.data?.value) {
     return (
-      <div className="alert alert-info flex justify-center">
-        <span>Program account not found. Make sure you have deployed the program and are on the correct cluster.</span>
+      <div className="space-y-4">
+        <div className="alert alert-info flex justify-center">
+          <span>Program account not found. Make sure you have deployed the program and are on the correct cluster.</span>
+        </div>
+        <div className="flex justify-center">
+          <NetworkHelper />
+        </div>
       </div>
     )
   }
@@ -89,9 +95,23 @@ export function CounterButtonInitialize() {
   const mutationInitialize = useCounterInitializeMutation()
 
   return (
-    <Button onClick={() => mutationInitialize.mutateAsync()} disabled={mutationInitialize.isPending}>
-      Initialize Counter {mutationInitialize.isPending && '...'}
-    </Button>
+    <div className="space-y-3">
+      <Button 
+        onClick={() => mutationInitialize.mutateAsync()} 
+        disabled={mutationInitialize.isPending}
+        className="w-full"
+      >
+        Initialize Counter {mutationInitialize.isPending && '...'}
+      </Button>
+      
+      {/* Network helper for troubleshooting */}
+      <div className="text-center">
+        <p className="text-xs text-muted-foreground mb-2">
+          Having connection issues? Try these network helpers:
+        </p>
+        <DevnetQuickActions />
+      </div>
+    </div>
   )
 }
 
